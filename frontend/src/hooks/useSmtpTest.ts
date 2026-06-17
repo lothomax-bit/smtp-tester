@@ -1,15 +1,15 @@
 import { useState, useEffect } from 'react';
-import { smtp } from '../../wailsjs/go/models';
+import { SMTPConfig, LogEntry, TestResult } from '../types';
 
 export function useSmtpTest() {
-    const [logs, setLogs] = useState<smtp.LogEntry[]>([]);
-    const [results, setResults] = useState<smtp.TestResult[]>([]);
+    const [logs, setLogs] = useState<LogEntry[]>([]);
+    const [results, setResults] = useState<TestResult[]>([]);
     const [isRunning, setIsRunning] = useState(false);
 
     useEffect(() => {
         let unsubscribe: (() => void) | undefined;
         if ((window as any).runtime && (window as any).runtime.EventsOn) {
-            unsubscribe = (window as any).runtime.EventsOn("smtp:log", (entry: smtp.LogEntry) => {
+            unsubscribe = (window as any).runtime.EventsOn("smtp:log", (entry: LogEntry) => {
                 setLogs(prev => [...prev, entry]);
             });
         }
@@ -21,7 +21,7 @@ export function useSmtpTest() {
         };
     }, []);
 
-    const startTest = async (config: smtp.SMTPConfig) => {
+    const startTest = async (config: SMTPConfig) => {
         setLogs([]);
         setResults([]);
         setIsRunning(true);

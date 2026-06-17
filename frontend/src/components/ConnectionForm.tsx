@@ -1,10 +1,10 @@
 import { useState, FormEvent, ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
-import { smtp } from '../../wailsjs/go/models';
+import { SMTPConfig } from '../types';
 import { Eye, EyeOff, Loader2 } from 'lucide-react';
 
 interface ConnectionFormProps {
-    onSubmit: (config: smtp.SMTPConfig) => void;
+    onSubmit: (config: SMTPConfig) => void;
     isRunning: boolean;
 }
 
@@ -44,7 +44,7 @@ export function ConnectionForm({ onSubmit, isRunning }: ConnectionFormProps) {
     const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
 
-        const config = new smtp.SMTPConfig({
+        const config: SMTPConfig = {
             email,
             username,
             password,
@@ -52,7 +52,7 @@ export function ConnectionForm({ onSubmit, isRunning }: ConnectionFormProps) {
             sendMail: sendTestMail,
             testTo: sendTestMail ? testTo : '',
             skipTLSVerify: skipTLSVerify
-        });
+        };
 
         onSubmit(config);
     };

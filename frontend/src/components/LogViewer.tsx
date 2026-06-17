@@ -1,9 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { smtp } from '../../wailsjs/go/models';
+import { LogEntry } from '../types';
 
 interface LogViewerProps {
-    logs: smtp.LogEntry[];
+    logs: LogEntry[];
 }
 
 export function LogViewer({ logs }: LogViewerProps) {
