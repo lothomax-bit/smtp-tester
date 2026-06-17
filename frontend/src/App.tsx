@@ -1,4 +1,3 @@
-import './i18n/i18n';
 import './style.css';
 import { ConnectionForm } from './components/ConnectionForm';
 import { LogViewer } from './components/LogViewer';

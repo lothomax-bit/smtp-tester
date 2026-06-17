@@ -90,6 +90,8 @@ func (a *App) ExportResults(results []smtp.TestResult, email, username, server, 
 
 // SendTestMail sends a test email
 func (a *App) SendTestMail(config smtp.SMTPConfig, to string) smtp.TestResult {
-	// Stub implementation
-	return smtp.TestResult{}
+	return smtp.TestResult{
+		Error: "SendTestMail is not yet implemented",
+		Trace: []smtp.LogEntry{},
+	}
 }
