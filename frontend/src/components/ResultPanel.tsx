@@ -1,9 +1,9 @@
 import { useTranslation } from 'react-i18next';
-import { smtp } from '../../wailsjs/go/models';
+import { TestResult } from '../types';
 import { CheckCircle2, XCircle, Download } from 'lucide-react';
 
 interface ResultPanelProps {
-    results: smtp.TestResult[];
+    results: TestResult[];
 }
 
 export function ResultPanel({ results }: ResultPanelProps) {
