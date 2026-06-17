@@ -110,7 +110,7 @@ func testSinglePort(cfg SMTPConfig, target SMTPTarget, emit func(LogEntry)) Test
 	if target.TLS == "tls" {
 		conn = tls.Client(conn, &tls.Config{
 			ServerName:         cfg.Host,
-			InsecureSkipVerify: true, // often needed for testing, or we could pass a flag
+			InsecureSkipVerify: cfg.SkipTLSVerify, // often needed for testing, or we could pass a flag
 		})
 	}
 
@@ -133,7 +133,7 @@ func testSinglePort(cfg SMTPConfig, target SMTPTarget, emit func(LogEntry)) Test
 		if ok, _ := client.Extension("STARTTLS"); ok {
 			tlsConfig := &tls.Config{
 				ServerName:         cfg.Host,
-				InsecureSkipVerify: true,
+				InsecureSkipVerify: cfg.SkipTLSVerify,
 			}
 			if err := client.StartTLS(tlsConfig); err != nil {
 				res.Error = fmt.Sprintf("STARTTLS error: %v", err)
