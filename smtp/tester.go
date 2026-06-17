@@ -218,8 +218,15 @@ func testSinglePort(cfg SMTPConfig, target SMTPTarget, emit func(LogEntry)) Test
 	res.Success = true
 
 	// Post-process trace to get Banner and EHLO caps
+	inEHLO := false
+	skippedEHLOGreeting := false
 	for _, tr := range res.Trace {
-		if tr.Direction == "<<<" {
+		if tr.Direction == ">>>" {
+			if strings.Contains(strings.ToUpper(tr.Message), "EHLO") && res.ServerBanner != "" {
+				inEHLO = true
+				skippedEHLOGreeting = false
+			}
+		} else if tr.Direction == "<<<" {
 			lines := strings.Split(tr.Message, "\n")
 			for _, line := range lines {
 				line = strings.TrimSpace(line)
@@ -229,13 +236,15 @@ func testSinglePort(cfg SMTPConfig, target SMTPTarget, emit func(LogEntry)) Test
 				if strings.HasPrefix(line, "220 ") && res.ServerBanner == "" {
 					res.ServerBanner = line[4:]
 				}
-				if strings.HasPrefix(line, "250-") || strings.HasPrefix(line, "250 ") {
-					// EHLO cap
-					if res.ServerBanner != "" { // probably after EHLO
+				if inEHLO && (strings.HasPrefix(line, "250-") || strings.HasPrefix(line, "250 ")) {
+					if !skippedEHLOGreeting {
+						skippedEHLOGreeting = true
+					} else {
 						cap := line[4:]
-						// only add if it's an actual capability (not the greeting)
-						// wait, the first 250 is usually the domain
 						res.EHLOCaps = append(res.EHLOCaps, cap)
+					}
+					if strings.HasPrefix(line, "250 ") {
+						inEHLO = false
 					}
 				}
 			}
