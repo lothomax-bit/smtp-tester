@@ -28,8 +28,10 @@ func (a *App) startup(ctx context.Context) {
 
 // RunTest starts the SMTP test for the given config
 func (a *App) RunTest(config smtp.SMTPConfig) []smtp.TestResult {
-	// Stub implementation
-	return []smtp.TestResult{}
+	emitFunc := func(entry smtp.LogEntry) {
+		runtime.EventsEmit(a.ctx, "smtp:log", entry)
+	}
+	return smtp.RunAllTests(config, emitFunc)
 }
 
 // ExportResults exports the results and returns the path
