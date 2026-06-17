@@ -123,7 +123,6 @@ func testSinglePort(cfg SMTPConfig, target SMTPTarget, emit func(LogEntry)) Test
 		res.Error = fmt.Sprintf("SMTP client error: %v", err)
 		return res
 	}
-	defer client.Quit() // gracefully try to quit later
 
 	// Store server banner from initial connection trace if we can
 	// But it's usually part of the SMTP greeting string, NewClient reads it.
@@ -215,6 +214,7 @@ func testSinglePort(cfg SMTPConfig, target SMTPTarget, emit func(LogEntry)) Test
 	// 10. Latency
 	res.LatencyMs = time.Since(start).Milliseconds()
 
+	client.Quit()
 	res.Success = true
 
 	// Post-process trace to get Banner and EHLO caps
