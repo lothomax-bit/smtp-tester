@@ -18,6 +18,7 @@ export function ConnectionForm({ onSubmit, isRunning }: ConnectionFormProps) {
     const [testTo, setTestTo] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [usernamePristine, setUsernamePristine] = useState(true);
+    const [skipTLSVerify, setSkipTLSVerify] = useState(false);
 
     const handleEmailChange = (e: ChangeEvent<HTMLInputElement>) => {
         const val = e.target.value;
@@ -49,7 +50,8 @@ export function ConnectionForm({ onSubmit, isRunning }: ConnectionFormProps) {
             password,
             host: smtpServer,
             sendMail: sendTestMail,
-            testTo: sendTestMail ? testTo : ''
+            testTo: sendTestMail ? testTo : '',
+            skipTLSVerify: skipTLSVerify
         });
 
         onSubmit(config);
@@ -106,6 +108,19 @@ export function ConnectionForm({ onSubmit, isRunning }: ConnectionFormProps) {
                     className="bg-gray-900 border border-gray-700 rounded p-2 text-white w-full focus:outline-none focus:border-blue-500"
                     placeholder="mail.example.com"
                 />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-[150px_1fr] items-center gap-4 pt-1">
+                <div></div>
+                <label className="flex items-center space-x-2 cursor-pointer text-gray-300 text-sm">
+                    <input
+                        type="checkbox"
+                        checked={skipTLSVerify}
+                        onChange={(e) => setSkipTLSVerify(e.target.checked)}
+                        className="rounded border-gray-600 bg-gray-900"
+                    />
+                    <span>{t('form.skipTLSVerify')}</span>
+                </label>
             </div>
 
             <div className="pt-2">

@@ -3,6 +3,7 @@
   "form.username": "Username",
   "form.password": "Password",
   "form.smtpServer": "SMTP Server",
+  "form.skipTLSVerify": "Skip TLS certificate verification",
   "form.sendTestMail": "Send Test Mail to",
   "form.startTest": "Test",
   "log.title": "Log Output",

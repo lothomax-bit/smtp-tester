@@ -25,6 +25,7 @@ export namespace smtp {
 	    email: string;
 	    testTo: string;
 	    sendMail: boolean;
+	    skipTLSVerify: boolean;
 
 	    static createFrom(source: any = {}) {
 	        return new SMTPConfig(source);
@@ -38,6 +39,7 @@ export namespace smtp {
 	        this.email = source["email"];
 	        this.testTo = source["testTo"];
 	        this.sendMail = source["sendMail"];
+	        this.skipTLSVerify = source["skipTLSVerify"];
 	    }
 	}
 	export class SMTPTarget {

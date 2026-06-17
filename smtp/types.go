@@ -1,12 +1,13 @@
 package smtp
 
 type SMTPConfig struct {
-	Host     string `json:"host"`
-	Username string `json:"username"`
-	Password string `json:"password"`
-	Email    string `json:"email"`
-	TestTo   string `json:"testTo"`
-	SendMail bool   `json:"sendMail"`
+	Host          string `json:"host"`
+	Username      string `json:"username"`
+	Password      string `json:"password"`
+	Email         string `json:"email"`
+	TestTo        string `json:"testTo"`
+	SendMail      bool   `json:"sendMail"`
+	SkipTLSVerify bool   `json:"skipTLSVerify"`
 }
 
 type SMTPTarget struct {
