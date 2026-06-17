@@ -18,8 +18,8 @@ func main() {
 	// Create application with options
 	err := wails.Run(&options.App{
 		Title:  "smtp-tester",
-		Width:  1024,
-		Height: 768,
+		Width:  900,
+		Height: 700,
 		AssetServer: &assetserver.Options{
 			Assets: assets,
 		},
@@ -27,6 +27,9 @@ func main() {
 		OnStartup:        app.startup,
 		Bind: []interface{}{
 			app,
+		},
+		SingleInstanceLock: &options.SingleInstanceLock{
+			UniqueId: "smtp-tester",
 		},
 	})
 
