@@ -1,0 +1,15 @@
+{
+  "form.email": "E-Mail",
+  "form.username": "Benutzername",
+  "form.password": "Passwort",
+  "form.smtpServer": "SMTP-Server",
+  "form.sendTestMail": "Test-Mail senden an",
+  "form.startTest": "Testen",
+  "log.title": "Log-Ausgabe",
+  "log.showTrace": "Trace anzeigen",
+  "results.title": "Ergebnisse",
+  "results.recommendation": "Empfehlung",
+  "results.export": "Exportieren",
+  "results.latency": "Latenz",
+  "results.certExpiry": "Zertifikat gueltig bis"
+}
