@@ -12,5 +12,7 @@
   "results.recommendation": "Empfehlung",
   "results.export": "Exportieren",
   "results.latency": "Latenz",
-  "results.certExpiry": "Zertifikat gueltig bis"
+  "results.certExpiry": "Zertifikat gueltig bis",
+  "testmail.success": "Test-Mail erfolgreich gesendet!",
+  "testmail.error": "Fehler beim Senden der Test-Mail: "
 }
