@@ -88,10 +88,28 @@ func (a *App) ExportResults(results []smtp.TestResult, email, username, server, 
 	return filepath
 }
 
-// SendTestMail sends a test email
-func (a *App) SendTestMail(config smtp.SMTPConfig, to string) smtp.TestResult {
-	return smtp.TestResult{
-		Error: "SendTestMail is not yet implemented",
-		Trace: []smtp.LogEntry{},
+// SendTestMailOnPort sends a test email on a specific port
+func (a *App) SendTestMailOnPort(config smtp.SMTPConfig, port int) smtp.TestResult {
+	var target smtp.SMTPTarget
+	found := false
+	for _, t := range smtp.TestMatrix {
+		if t.Port == port {
+			target = t
+			found = true
+			break
+		}
 	}
+
+	if !found {
+		return smtp.TestResult{
+			Error: fmt.Sprintf("Port %d not found in test matrix", port),
+			Trace: []smtp.LogEntry{},
+		}
+	}
+
+	emitFunc := func(entry smtp.LogEntry) {
+		runtime.EventsEmit(a.ctx, "smtp:log:testmail", entry)
+	}
+
+	return smtp.SendTestMail(config, target, emitFunc)
 }

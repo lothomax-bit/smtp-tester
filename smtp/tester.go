@@ -20,6 +20,7 @@ var TestMatrix = []SMTPTarget{
 func RunAllTests(cfg SMTPConfig, emit func(LogEntry)) []TestResult {
 	var wg sync.WaitGroup
 	results := make([]TestResult, len(TestMatrix))
+	cfg.SendMail = false // Never send mail during parallel port tests
 	for i, target := range TestMatrix {
 		wg.Add(1)
 		go func(i int, t SMTPTarget) {
@@ -29,6 +30,11 @@ func RunAllTests(cfg SMTPConfig, emit func(LogEntry)) []TestResult {
 	}
 	wg.Wait()
 	return results
+}
+
+func SendTestMail(cfg SMTPConfig, target SMTPTarget, emit func(LogEntry)) TestResult {
+	cfg.SendMail = true
+	return testSinglePort(cfg, target, emit)
 }
 
 func tlsVersionString(v uint16) string {

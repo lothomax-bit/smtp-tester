@@ -7,7 +7,7 @@ import { useSmtpTest } from './hooks/useSmtpTest';
 import { Server } from 'lucide-react';
 
 function App() {
-    const { logs, results, isRunning, startTest } = useSmtpTest();
+    const { logs, testMailLogs, results, isRunning, currentConfig, startTest, sendTestMail } = useSmtpTest();
 
     return (
         <div className="min-h-screen bg-gray-900 text-white p-6 min-w-[900px]">
@@ -25,11 +25,11 @@ function App() {
                 {/* Form & Logs Layout */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <ConnectionForm onSubmit={startTest} isRunning={isRunning} />
-                    <LogViewer logs={logs} />
+                    <LogViewer logs={logs} testMailLogs={testMailLogs} />
                 </div>
 
                 {/* Results */}
-                <ResultPanel results={results} />
+                <ResultPanel results={results} onSendTestMail={sendTestMail} config={currentConfig} />
 
             </div>
         </div>

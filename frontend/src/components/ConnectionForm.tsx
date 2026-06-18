@@ -14,8 +14,6 @@ export function ConnectionForm({ onSubmit, isRunning }: ConnectionFormProps) {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [smtpServer, setSmtpServer] = useState('');
-    const [sendTestMail, setSendTestMail] = useState(false);
-    const [testTo, setTestTo] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [usernamePristine, setUsernamePristine] = useState(true);
     const [skipTLSVerify, setSkipTLSVerify] = useState(false);
@@ -49,8 +47,8 @@ export function ConnectionForm({ onSubmit, isRunning }: ConnectionFormProps) {
             username,
             password,
             host: smtpServer,
-            sendMail: sendTestMail,
-            testTo: sendTestMail ? testTo : '',
+            sendMail: false, // Legacy field, kept false for base run
+            testTo: '',      // Legacy field
             skipTLSVerify: skipTLSVerify
         };
 
@@ -121,31 +119,6 @@ export function ConnectionForm({ onSubmit, isRunning }: ConnectionFormProps) {
                     />
                     <span>{t('form.skipTLSVerify')}</span>
                 </label>
-            </div>
-
-            <div className="pt-2">
-                <label className="flex items-center space-x-2 cursor-pointer text-gray-300">
-                    <input
-                        type="checkbox"
-                        checked={sendTestMail}
-                        onChange={(e) => setSendTestMail(e.target.checked)}
-                        className="rounded border-gray-600 bg-gray-900"
-                    />
-                    <span>{t('form.sendTestMail')}</span>
-                </label>
-
-                {sendTestMail && (
-                    <div className="mt-2 ml-6">
-                        <input
-                            type="email"
-                            value={testTo}
-                            onChange={(e) => setTestTo(e.target.value)}
-                            className="bg-gray-900 border border-gray-700 rounded p-2 text-white w-full focus:outline-none focus:border-blue-500"
-                            placeholder="recipient@example.com"
-                            required={sendTestMail}
-                        />
-                    </div>
-                )}
             </div>
 
             <div className="pt-4 flex justify-center">
