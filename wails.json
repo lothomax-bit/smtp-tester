@@ -7,7 +7,14 @@
   "frontend:dev:watcher": "npm run dev",
   "frontend:dev:serverUrl": "auto",
   "author": {
-    "name": "google-labs-jules[bot]",
-    "email": "161369871+google-labs-jules[bot]@users.noreply.github.com"
+    "name": "Christian Varrelmann",
+    "email": "lothomax@googlemail.com"
+  },
+  "info": {
+    "companyName": "Christian Varrelmann",
+    "productName": "SMTP Tester",
+    "productVersion": "1.0.0",
+    "copyright": "Copyright 2026",
+    "comments": "SMTP connection tester"
   }
 }
