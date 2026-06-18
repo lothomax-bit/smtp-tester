@@ -33,7 +33,7 @@ export function LogViewer({ logs, testMailLogs }: LogViewerProps) {
     const filteredLogs = showTrace ? currentLogs : currentLogs.filter(l => l.level !== 'TRACE');
 
     return (
-        <div className="bg-gray-800 p-4 rounded-lg shadow-md border border-gray-700 flex flex-col min-h-[400px] max-h-[500px] h-full">
+        <div className="bg-gray-800 p-4 rounded-lg shadow-md border border-gray-700 flex flex-col flex-1 overflow-y-auto">
             <div className="flex justify-between items-center mb-2">
                 <div className="flex space-x-4">
                     <button
@@ -72,11 +72,11 @@ export function LogViewer({ logs, testMailLogs }: LogViewerProps) {
                         let prefix = null;
                         let highlightClass = "";
 
-                        if (log.direction === 'OUT') {
+                        if (log.direction === '>>>') {
                             alignClass = "justify-start";
                             textColorClass = "text-blue-300";
                             prefix = <span className="mr-2">→</span>;
-                        } else if (log.direction === 'IN') {
+                        } else if (log.direction === '<<<') {
                             alignClass = "justify-end";
                             textColorClass = "text-emerald-400";
                             prefix = <span className="mr-2">←</span>;

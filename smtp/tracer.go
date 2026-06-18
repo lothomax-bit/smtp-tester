@@ -9,7 +9,6 @@ type TracingConn struct {
 	net.Conn
 	logFn         func(direction, data string)
 	redactor      Redactor
-	muted         bool
 	postAuthMuted bool
 }
 
@@ -22,7 +21,7 @@ func NewTracingConn(conn net.Conn, logFn func(direction, data string)) *TracingC
 
 func (t *TracingConn) Read(b []byte) (int, error) {
 	n, err := t.Conn.Read(b)
-	if n > 0 && !t.muted && !t.postAuthMuted {
+	if n > 0 && !t.postAuthMuted {
 		lines := strings.Split(string(b[:n]), "\r\n")
 		for _, line := range lines {
 			trimmed := strings.TrimSpace(line)
@@ -50,11 +49,7 @@ func (t *TracingConn) Write(b []byte) (int, error) {
 	strB := string(b)
 	upperStr := strings.ToUpper(strB)
 
-	if strings.Contains(upperStr, "EHLO ") || strings.Contains(upperStr, "STARTTLS") {
-		t.muted = false
-	}
-
-	if strings.HasPrefix(upperStr, "MAIL ") || strings.HasPrefix(upperStr, "RCPT ") || strings.HasPrefix(upperStr, "DATA") {
+	if strings.HasPrefix(upperStr, "MAIL ") || strings.HasPrefix(upperStr, "RCPT ") || strings.HasPrefix(upperStr, "DATA") || strings.Contains(upperStr, "EHLO ") || strings.Contains(upperStr, "STARTTLS") {
 		t.postAuthMuted = false
 	}
 
@@ -63,7 +58,6 @@ func (t *TracingConn) Write(b []byte) (int, error) {
 	newState := t.redactor.state
 
 	if prevState > 0 && newState == 0 {
-		t.muted = true
 		t.postAuthMuted = true
 	}
 
