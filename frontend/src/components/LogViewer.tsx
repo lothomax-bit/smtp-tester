@@ -35,7 +35,7 @@ export function LogViewer({ logs }: LogViewerProps) {
     const filteredLogs = showTrace ? logs : logs.filter(l => l.level !== 'TRACE');
 
     return (
-        <div className="bg-gray-800 p-4 rounded-lg shadow-md border border-gray-700 flex flex-col h-[300px]">
+        <div className="bg-gray-800 p-4 rounded-lg shadow-md border border-gray-700 flex flex-col min-h-[400px] max-h-[500px] h-full">
             <div className="flex justify-between items-center mb-2">
                 <h2 className="text-gray-300 font-bold tracking-wider">{t('log.title').toUpperCase()}</h2>
                 <label className="flex items-center space-x-2 cursor-pointer text-gray-400 hover:text-white transition-colors">
