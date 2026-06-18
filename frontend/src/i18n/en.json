@@ -12,5 +12,7 @@
   "results.recommendation": "Recommendation",
   "results.export": "Export",
   "results.latency": "Latency",
-  "results.certExpiry": "Cert valid until"
+  "results.certExpiry": "Cert valid until",
+  "testmail.success": "Test mail sent successfully!",
+  "testmail.error": "Error sending test mail: "
 }
