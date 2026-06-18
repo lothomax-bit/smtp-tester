@@ -1,13 +1,18 @@
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { TestResult } from '../types';
-import { CheckCircle2, XCircle, Download } from 'lucide-react';
+import { TestResult, SMTPConfig } from '../types';
+import { CheckCircle2, XCircle, Download, Send } from 'lucide-react';
 
 interface ResultPanelProps {
     results: TestResult[];
+    onSendTestMail: (port: number, testTo: string) => void;
+    config: SMTPConfig | null;
 }
 
-export function ResultPanel({ results }: ResultPanelProps) {
+export function ResultPanel({ results, onSendTestMail, config }: ResultPanelProps) {
     const { t, i18n } = useTranslation();
+    const [testTo, setTestTo] = useState('');
+    const [selectedPort, setSelectedPort] = useState<number | ''>('');
 
     if (!results || results.length === 0) {
         return null;
@@ -15,6 +20,11 @@ export function ResultPanel({ results }: ResultPanelProps) {
 
     const successfulResults = results.filter(r => r.success);
     const bestResult = successfulResults.length > 0 ? successfulResults[0] : null;
+
+    // Set initial selected port to best result if available
+    if (selectedPort === '' && bestResult) {
+        setSelectedPort(bestResult.target.port);
+    }
 
     const handleExport = async () => {
         try {
@@ -90,6 +100,50 @@ export function ResultPanel({ results }: ResultPanelProps) {
                     <span className="text-gray-200">
                         Port {bestResult.target.port} ({bestResult.target.tls})
                     </span>
+                </div>
+            )}
+
+            {successfulResults.length > 0 && (
+                <div className="mt-6 pt-4 border-t border-gray-700 text-left">
+                    <h3 className="text-gray-300 font-bold tracking-wider mb-4">Test-Mail senden</h3>
+                    <div className="flex flex-col md:flex-row gap-4 items-end">
+                        <div className="flex-1 w-full">
+                            <label className="block text-sm text-gray-400 mb-1">Empfänger (Test-Mail senden an)</label>
+                            <input
+                                type="email"
+                                value={testTo}
+                                onChange={(e) => setTestTo(e.target.value)}
+                                className="bg-gray-900 border border-gray-700 rounded p-2 text-white w-full focus:outline-none focus:border-blue-500"
+                                placeholder="recipient@example.com"
+                            />
+                        </div>
+                        <div className="w-full md:w-64">
+                            <label className="block text-sm text-gray-400 mb-1">Port</label>
+                            <select
+                                value={selectedPort}
+                                onChange={(e) => setSelectedPort(Number(e.target.value))}
+                                className="bg-gray-900 border border-gray-700 rounded p-2 text-white w-full focus:outline-none focus:border-blue-500"
+                            >
+                                {successfulResults.map((r, i) => (
+                                    <option key={i} value={r.target.port}>
+                                        Port {r.target.port} - {r.target.tls.toUpperCase()}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                        <button
+                            onClick={() => {
+                                if (selectedPort && testTo) {
+                                    onSendTestMail(Number(selectedPort), testTo);
+                                }
+                            }}
+                            disabled={!testTo || !selectedPort}
+                            className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors w-full md:w-auto justify-center"
+                        >
+                            <Send size={18} />
+                            <span>Senden</span>
+                        </button>
+                    </div>
                 </div>
             )}
         </div>

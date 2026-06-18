@@ -3,21 +3,27 @@ import { SMTPConfig, LogEntry, TestResult } from '../types';
 
 export function useSmtpTest() {
     const [logs, setLogs] = useState<LogEntry[]>([]);
+    const [testMailLogs, setTestMailLogs] = useState<LogEntry[]>([]);
     const [results, setResults] = useState<TestResult[]>([]);
     const [isRunning, setIsRunning] = useState(false);
+    const [currentConfig, setCurrentConfig] = useState<SMTPConfig | null>(null);
 
     useEffect(() => {
-        let unsubscribe: (() => void) | undefined;
+        let unsubscribeLog: (() => void) | undefined;
+        let unsubscribeTestMail: (() => void) | undefined;
+
         if ((window as any).runtime && (window as any).runtime.EventsOn) {
-            unsubscribe = (window as any).runtime.EventsOn("smtp:log", (entry: LogEntry) => {
+            unsubscribeLog = (window as any).runtime.EventsOn("smtp:log", (entry: LogEntry) => {
                 setLogs(prev => [...prev, entry]);
+            });
+            unsubscribeTestMail = (window as any).runtime.EventsOn("smtp:log:testmail", (entry: LogEntry) => {
+                setTestMailLogs(prev => [...prev, entry]);
             });
         }
 
         return () => {
-            if (unsubscribe) {
-                unsubscribe();
-            }
+            if (unsubscribeLog) unsubscribeLog();
+            if (unsubscribeTestMail) unsubscribeTestMail();
         };
     }, []);
 
@@ -25,6 +31,7 @@ export function useSmtpTest() {
         setLogs([]);
         setResults([]);
         setIsRunning(true);
+        setCurrentConfig(config);
         try {
             if ((window as any).go?.main?.App?.RunTest) {
                 const testResults = await (window as any).go.main.App.RunTest(config);
@@ -37,10 +44,28 @@ export function useSmtpTest() {
         }
     };
 
+    const sendTestMail = async (port: number, testTo: string) => {
+        if (!currentConfig) return;
+        setTestMailLogs([]);
+
+        const mailConfig = { ...currentConfig, testTo, sendMail: true };
+
+        try {
+            if ((window as any).go?.main?.App?.SendTestMailOnPort) {
+                await (window as any).go.main.App.SendTestMailOnPort(mailConfig, port);
+            }
+        } catch (error) {
+            console.error("Failed to send test mail:", error);
+        }
+    };
+
     return {
         logs,
+        testMailLogs,
         results,
         isRunning,
+        currentConfig,
         startTest,
+        sendTestMail,
     };
 }
