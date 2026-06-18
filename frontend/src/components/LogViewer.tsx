@@ -30,12 +30,6 @@ export function LogViewer({ logs, testMailLogs }: LogViewerProps) {
         }
     };
 
-    const getDirectionMarker = (dir: string) => {
-        if (dir === 'IN') return <span className="text-blue-400 font-bold mr-2">&lt;&lt;&lt;</span>;
-        if (dir === 'OUT') return <span className="text-pink-400 font-bold mr-2">&gt;&gt;&gt;</span>;
-        return null;
-    };
-
     const filteredLogs = showTrace ? currentLogs : currentLogs.filter(l => l.level !== 'TRACE');
 
     return (
@@ -70,14 +64,41 @@ export function LogViewer({ logs, testMailLogs }: LogViewerProps) {
                 {filteredLogs.length === 0 ? (
                     <div className="text-gray-500 italic">Waiting for tests...</div>
                 ) : (
-                    filteredLogs.map((log, i) => (
-                        <div key={i} className={`mb-1 ${getLevelColor(log.level)}`}>
-                            <span className="text-gray-500 mr-2">{log.timestamp.split('T')[1]?.substring(0, 8) || log.timestamp}</span>
-                            <span className="font-bold w-12 inline-block mr-2">{log.level}</span>
-                            {getDirectionMarker(log.direction)}
-                            <span className="whitespace-pre-wrap">{log.message}</span>
-                        </div>
-                    ))
+                    filteredLogs.map((log, i) => {
+                        const timeStr = log.timestamp.split('T')[1]?.substring(0, 8) || log.timestamp;
+
+                        let alignClass = "justify-start";
+                        let textColorClass = getLevelColor(log.level);
+                        let prefix = null;
+                        let highlightClass = "";
+
+                        if (log.direction === 'OUT') {
+                            alignClass = "justify-start";
+                            textColorClass = "text-blue-300";
+                            prefix = <span className="mr-2">→</span>;
+                        } else if (log.direction === 'IN') {
+                            alignClass = "justify-end";
+                            textColorClass = "text-emerald-400";
+                            prefix = <span className="mr-2">←</span>;
+                            highlightClass = "border-r-2 border-emerald-500 pr-2";
+                        } else {
+                            prefix = <span className="font-bold w-12 inline-block mr-2 text-left">{log.level}</span>;
+                        }
+
+                        return (
+                            <div key={i} className="flex flex-row w-full mb-1">
+                                <div className="text-gray-500 mr-2 w-20 shrink-0 text-left">
+                                    {timeStr}
+                                </div>
+                                <div className={`flex flex-1 ${alignClass}`}>
+                                    <div className={`flex flex-row items-start ${textColorClass} ${highlightClass} max-w-full`}>
+                                        {prefix}
+                                        <span className="whitespace-pre-wrap text-left break-all">{log.message}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        );
+                    })
                 )}
                 <div ref={bottomRef} />
             </div>
